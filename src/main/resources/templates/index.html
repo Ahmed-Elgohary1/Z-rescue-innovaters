@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Application</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form id="rankForm">
+        <div class="form-group">
+            <label for="rankSelect">Select Danger Rank:</label>
+            <select id="rankSelect" class="form-control">
+                <option value="Very low">Very low</option>
+                <option value="Low">Low</option>
+                <option value="Moderate">Moderate</option>
+                <option value="High">High</option>
+                <option value="Very high">Very high</option>
+                <option value="Extreme">Extreme</option>
+
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div id="resultContainer" class="mt-4"></div>
+</div>
+
+<div class="modal" id="detailsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Record Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+
+
+
+                        <th>ID</th>
+                        <th>Score</th>
+                        <!-- Add additional columns for other details -->
+                    </tr>
+                    </thead>
+                    <tbody id="modalTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#rankForm').submit(function(event) {
+            event.preventDefault();
+            var selectedRank = $('#rankSelect').val();
+
+            console.log(selectedRank);
+
+            $.ajax({
+                url: 'http://localhost:8080/api/Issues/rank/' + selectedRank,
+                type: 'GET',
+                success: function(response) {
+                    // Handle the response and update the UI accordingly
+                    var resultContainer = $('#resultContainer');
+                    resultContainer.empty();
+
+                    if (response.length > 0) {
+                        var table = $('<table>').addClass('table');
+                        var tableHead = $('<thead>').appendTo(table);
+                        var tableBody = $('<tbody>').appendTo(table);
+                        var tableRow = $('<tr>').appendTo(tableHead);
+                        $('<th>').text('ID').appendTo(tableRow);
+                        $('<th>').text('Score').appendTo(tableRow);
+                        // Add additional columns for other details
+
+                        response.forEach(function(record) {
+                            var row = $('<tr>').appendTo(tableBody);
+                            $('<td>').text(record.id).appendTo(row);
+                            $('<td>').text(record.score).appendTo(row);
+
+                            // Add additional columns for other details
+
+                            var detailsButton = $('<button>').addClass('btn btn-primary btn-sm').text('Details').appendTo(row);
+                            detailsButton.click(function() {
+                                showDetailsModal(record);
+                            });
+                        });
+
+                        resultContainer.append(table);
+                    } else {
+                        resultContainer.text('No records found with the selected rank.');
+                    }
+                },
+                error: function() {
+                    // Handle errors, if any
+                    console.log('An error occurred during the AJAX request.');
+                }
+            });
+        });
+    });
+
+    function showDetailsModal(record) {
+        var modalTableBody = $('#modalTableBody');
+        modalTableBody.empty();
+
+        var modalRow = $('<tr>').appendTo(modalTableBody);
+        $('<td>').text(record.id).appendTo(modalRow);
+        $('<td>').text(record.score).appendTo(modalRow);
+        // Add additional columns for other details
+
+        $('#detailsModal').modal('show');
+    }
+</script>
+</body>
+</html>
