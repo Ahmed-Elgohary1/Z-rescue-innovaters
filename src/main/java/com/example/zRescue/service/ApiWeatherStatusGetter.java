@@ -37,12 +37,12 @@ public class ApiWeatherStatusGetter {
 
 
     private static final Logger log = Logger.getLogger(ApiWeatherStatusGetter.class.getName());
-    private static final String ENDPOINT_URL ="https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true&temperature_unit=celsius&timeformat=unixtime&forecast_days=1";
+   // private static  String ENDPOINT_URL ="https://api.open-meteo.com/v1/forecast?latitude="+52.52+"&+longitude="+13.41+"&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true&temperature_unit=celsius&timeformat=unixtime&forecast_days=1";
 
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    public JSONObject getApiResponse() {
+    public JSONObject getApiResponse(String ENDPOINT_URL) {
         String responseString;
         try {
             URL url = new URL(ENDPOINT_URL);

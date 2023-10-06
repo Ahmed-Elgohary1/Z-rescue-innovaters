@@ -14,15 +14,11 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Issue {
 
-
     private double latitude;
     private double longitude;
 
     private Integer timeStamp;
-
     @Lob
     @Column(name = "imagedata")
     private byte[] imageData;
-
-
 }
